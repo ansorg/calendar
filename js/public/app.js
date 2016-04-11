@@ -2914,6 +2914,25 @@ app.factory('SimpleEvent', function() {
 	return SimpleEvent;
 });
 
+app.factory('Subscription', ['Calendar', '$http', function(Calendar, $http) {
+	'use strict';
+
+	function Subscription(url, props) {
+		Calendar.apply(this, arguments);
+
+		angular.extend(this, {
+			url: props.url
+		});
+	}
+
+	Subscription.prototype = Object.create(Calendar.prototype);
+
+	Subscription.prototype.fcEventSource.events = function(start, end, timezone) {
+
+	};
+
+	return Subscription;
+}]);
 app.factory('Timezone',
 	function() {
 		'use strict';
@@ -3254,6 +3273,7 @@ app.service('CalendarService', ['DavClient', 'Calendar', function(DavClient, Cal
 	this._takenUrls = [];
 
 	this._PROPERTIES = [
+		'{' + DavClient.NS_DAV + '}resourcetype',
 		'{' + DavClient.NS_DAV + '}displayname',
 		'{' + DavClient.NS_IETF + '}calendar-description',
 		'{' + DavClient.NS_IETF + '}calendar-timezone',
@@ -3263,7 +3283,8 @@ app.service('CalendarService', ['DavClient', 'Calendar', function(DavClient, Cal
 		'{' + DavClient.NS_OWNCLOUD + '}calendar-enabled',
 		'{' + DavClient.NS_DAV + '}acl',
 		'{' + DavClient.NS_DAV + '}owner',
-		'{' + DavClient.NS_OWNCLOUD + '}invite'
+		'{' + DavClient.NS_OWNCLOUD + '}invite',
+		'{' + DavClient.NS_CALENDARSERVER + '}source'
 	];
 
 	function discoverHome(callback) {
